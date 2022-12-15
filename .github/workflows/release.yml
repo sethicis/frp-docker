@@ -34,23 +34,33 @@ jobs:
       with:
         path: ./*
         key: ${{ env.CACHE_KEY }}
-    - name: Test changes
-      id: build-test
-      uses: ./.github/workflows/test.yml
+  validate-build:
+    needs: [update]
+    uses: ./.github/workflows/test.yml
+    with:
+      cache-key: ${{ env.CACHE_KEY }}
+    secrets:
+      DOCKER_HUB_ACCESS: ${{ secrets.DOCKER_HUB_ACCESS }}
+  commit-changes:
+    needs: [validate-build, update]
+    runs-on: ubuntu-latest
+    steps:
+    - name: Cache changes for testing
+      uses: actions/cache@v3
       with:
-        cache-key: ${{ env.CACHE_KEY }}
-      secrets:
-        DOCKER_HUB_ACCESS: ${{ secrets.DOCKER_HUB_ACCESS }}
+        path: ./*
+        key: ${{ env.CACHE_KEY }}
     - name: Git Auto Commit
       if: ${{ success()  }}
       uses: stefanzweifel/git-auto-commit-action@v4.16.0
       with:
         commit_message: 'Latest'
   deploy:
-    needs: [check-for-latest, update]
+    needs: [check-for-latest, update, validate-build, commit-changes]
     if: ${{ needs.check-for-latest.outputs.hasNewVersion }}
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
       - name: Push New Tags
         run: |
           docker push sethicis/frp-docker:latest
