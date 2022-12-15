@@ -145,3 +145,10 @@ remote_port = 443
 HOST_IP=xxx.xxx.xxx.xxx
 FRP_TOKEN=xxxxxxxxxxxxxxxxxxxx
 ```
+
+## Credits and Acknowledgements
+
+* All credit for frp goes to the original author: fatedier (https://github.com/fatedier/frp)
+* This Docker project is a fork of the work done by: geektheripper (https://github.com/geektheripper/frp-docker)
+
+Thank you both for all your efforts to make this possible.
