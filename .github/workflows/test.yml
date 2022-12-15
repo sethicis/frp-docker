@@ -1,0 +1,33 @@
+name: Validate Dockerfile Build
+
+on:
+  workflow_dispatch:
+  workflow_call:
+    inputs:
+      cache-key:
+        required: true
+        type: string
+    secrets:
+      DOCKER_HUB_ACCESS:
+        required: true
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Is PR?
+      if: ${{ github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch' }}
+      uses: actions/checkout@v3
+    - name: Is cache?
+      id: load-cache
+      if: ${{ github.event_name == 'workflow_call' }}
+      uses: actions/cache@v3
+      with:
+        path: ./*
+        key: ${{ inputs.cache-key }}
+    - name: Fail on missed cache
+      if: ${{ github.event_name == 'workflow_call' && steps.load-cache.outputs.cache-hit != 'true' }}
+      run: |
+        echo 'Failed to locate cache for given key'
+        exit 1
+    - name: Build Docker Image
+      run: docker build .
