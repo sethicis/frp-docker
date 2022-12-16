@@ -40,10 +40,13 @@ jobs:
         push: true
         tags: sethicis/frp-docker:latest,sethicis/frp-docker:${{ needs.check-for-latest.outputs.newVersion }}
     - name: Create Pull Request
+      if: ${{ success() }}
       id: cpr
       uses: peter-evans/create-pull-request@v3
       with:
         commit-message: Updated Dockerfile with v${{ needs.check-for-latest.outputs.newVersion }}
+        branch: automerge/dockerfile-update-v${{ needs.check-for-latest.outputs.newVersion }}
+        delete-branch: true
     - name: Enable Pull Request Automerge
       if: steps.cpr.outputs.pull-request-operation == 'created'
       uses: peter-evans/enable-pull-request-automerge@v2
