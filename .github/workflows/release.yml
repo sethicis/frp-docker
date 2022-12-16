@@ -47,6 +47,8 @@ jobs:
         commit-message: Updated Dockerfile with v${{ needs.check-for-latest.outputs.newVersion }}
         branch: automerge/dockerfile-update-v${{ needs.check-for-latest.outputs.newVersion }}
         delete-branch: true
+        title: "AUTO-UPDATE-DOCKERFILE: FRP v${{ needs.check-for-latest.outputs.newVersion }}"
+        body: "Automated changes applied to update the Dockerfile with the latest FRP version.  New image tag(s) have been deployed to the registry."
     - name: Enable Pull Request Automerge
       if: steps.cpr.outputs.pull-request-operation == 'created'
       uses: peter-evans/enable-pull-request-automerge@v2
