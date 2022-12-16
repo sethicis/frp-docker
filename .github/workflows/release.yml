@@ -15,15 +15,19 @@ jobs:
     - uses: actions/checkout@v3
     - name: Get new version number
       id: new-version
-      run: echo "LATEST_VERSION=$(./get_latest_release_version.sh)" | tee -a $GITHUB_OUTPUT
+      run: echo "LATEST_VERSION=$(./get_latest_release_version.sh)" | >> $GITHUB_OUTPUT
     - name: Get current version
       id: current-version
-      run: echo "CURRENT_VERSION=$(cat Dockerfile | sed -n -E 's/.*frp_version=([0-9.-]+)/\1/p')" | tee -a $GITHUB_OUTPUT
+      run: echo "CURRENT_VERSION=$(cat Dockerfile | sed -n -E 's/.*frp_version=([0-9.-]+)/\1/p')" | >> $GITHUB_OUTPUT
   update-and-deploy:
     needs: check-for-latest
     if: ${{ needs.check-for-latest.outputs.hasNewVersion }}
     runs-on: ubuntu-latest
     steps:
+    - name: test
+      run: |
+        echo ${{ needs.check-for-latest.outputs.hasNewVersion }}
+        echo ${{ needs.check-for-latest.outputs.newVersion }}
     - uses: actions/checkout@v3
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
