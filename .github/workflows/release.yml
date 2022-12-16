@@ -13,12 +13,10 @@ jobs:
       hasNewVersion: ${{ steps.new-version.outputs.LATEST_VERSION != steps.current-version.outputs.CURRENT_VERSION }}
     steps:
     - uses: actions/checkout@v3
-    - name: Get new version number
-      id: new-version
-      run: echo "LATEST_VERSION=$(./get_latest_release_version.sh)" | >> $GITHUB_OUTPUT
-    - name: Get current version
-      id: current-version
-      run: echo "CURRENT_VERSION=$(cat Dockerfile | sed -n -E 's/.*frp_version=([0-9.-]+)/\1/p')" | >> $GITHUB_OUTPUT
+    - id: new-version
+      run: echo "LATEST_VERSION=$(./get_latest_release_version.sh)" >> $GITHUB_OUTPUT
+    - id: current-version
+      run: echo "CURRENT_VERSION=$(cat Dockerfile | sed -n -E 's/.*frp_version=([0-9.-]+)/\1/p')" >> $GITHUB_OUTPUT
   update-and-deploy:
     needs: check-for-latest
     if: ${{ needs.check-for-latest.outputs.hasNewVersion }}
