@@ -1,6 +1,6 @@
 FROM alpine:3.8
 
-ENV frp_version=0.45.0
+ENV frp_version=0.44.0
 
 ADD ./docker-entrypoint.sh /
 
