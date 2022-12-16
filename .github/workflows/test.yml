@@ -1,4 +1,4 @@
-name: Validate Dockerfile Build
+name: Validate Dockerfile
 
 on:
   pull_request:
