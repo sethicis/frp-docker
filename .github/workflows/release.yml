@@ -14,18 +14,14 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - id: new-version
-      run: echo "LATEST_VERSION=$(./get_latest_release_version.sh)" >> $GITHUB_OUTPUT
+      run: echo "LATEST_VERSION=$(./get_latest_release_version.sh)" | tee -a $GITHUB_OUTPUT
     - id: current-version
-      run: echo "CURRENT_VERSION=$(cat Dockerfile | sed -n -E 's/.*frp_version=([0-9.-]+)/\1/p')" >> $GITHUB_OUTPUT
+      run: echo "CURRENT_VERSION=$(cat Dockerfile | sed -n -E 's/.*frp_version=([0-9.-]+)/\1/p')" | tee -a $GITHUB_OUTPUT
   update-and-deploy:
     needs: check-for-latest
-    if: ${{ needs.check-for-latest.outputs.hasNewVersion }}
+    if: ${{ needs.check-for-latest.outputs.hasNewVersion == 'true' }}
     runs-on: ubuntu-latest
     steps:
-    - name: test
-      run: |
-        echo ${{ needs.check-for-latest.outputs.hasNewVersion }}
-        echo ${{ needs.check-for-latest.outputs.newVersion }}
     - uses: actions/checkout@v3
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
@@ -38,7 +34,13 @@ jobs:
         username: ${{ secrets.DOCKER_HUB_USER }}
         password: ${{ secrets.DOCKER_HUB_ACCESS }}
     - name: Build and push
+      id: build-and-push
       uses: docker/build-push-action@v3
       with:
         push: true
         tags: sethicis/frp-docker:latest,sethicis/frp-docker:${{ needs.check-for-latest.outputs.newVersion }}
+    - name: Commit changes
+      if: ${{ $success() }}
+      uses: stefanzweifel/git-auto-commit-action@v4.16.0
+      with:
+        commit_message: Updated Dockerfile with FRP v${{ needs.check-for-latest.outputs.newVersion }}
