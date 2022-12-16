@@ -32,5 +32,4 @@ jobs:
         echo 'Failed to locate cache for given key'
         exit 1
     - name: Build Docker Image
-      if: ${{ success() }}
       run: docker build .

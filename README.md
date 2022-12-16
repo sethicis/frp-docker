@@ -13,14 +13,14 @@ a config file is necessary for this image, you can [read the doc](https://github
 ### Start a frp server
 
 ```shell
-$ docker run -d --network=host -v /path/to/frps.ini:/etc/frp/frps.ini:ro sethicis/frp-docker
+$ docker run -d --network=host -v /path/to/frps.ini:/etc/frp/frps.ini:ro ghcr.io/sethicis/frp-docker
 ## `--network=host` means the docker container run on host network
 ```
 
 ### Start a frp client
 
 ```shell
-$ docker run -d --network=host -v /path/to/frpc.ini:/etc/frp/frpc.ini:ro sethicis/frp-docker
+$ docker run -d --network=host -v /path/to/frpc.ini:/etc/frp/frpc.ini:ro ghcr.io/sethicis/frp-docker
 ## `--network=host` means the docker container run on host network
 ```
 
@@ -37,17 +37,17 @@ what it will run depends on environment variables and config file
 
 # first , it depends depend on config file
 
-$ docker run -d --network=host -v /somepath/config/frps.ini:/etc/frp/frps.ini:ro sethicis/frp-docker
+$ docker run -d --network=host -v /somepath/config/frps.ini:/etc/frp/frps.ini:ro ghcr.io/sethicis/frp-docker
 # => this command start a frp server
 
-$ docker run -d --network=host -v /somepath/config/frpc.ini:/etc/frp/frpc.ini:ro sethicis/frp-docker
+$ docker run -d --network=host -v /somepath/config/frpc.ini:/etc/frp/frpc.ini:ro ghcr.io/sethicis/frp-docker
 # => this command start a frp client
 
-$ docker run -d --network=host -v /somepath/config:/etc/frp:ro sethicis/frp-docker
+$ docker run -d --network=host -v /somepath/config:/etc/frp:ro ghcr.io/sethicis/frp-docker
 # => this command start both server and client
 
 # you can pass an enviroment variable 'FRP_MODE' to force what it run, 'FRP_MODE' can be set to 'frpc', 'frp-client', 'frps', 'frp-server' and 'both'
-$ docker run -d --network=host --env FRP_MODE=frps -v /somepath/config:/etc/frp:ro sethicis/frp-docker
+$ docker run -d --network=host --env FRP_MODE=frps -v /somepath/config:/etc/frp:ro ghcr.io/sethicis/frp-docker
 # => this command start a frp server
 ```
 
@@ -63,7 +63,7 @@ docker-compose.yml
 version: '3'
 services:
   frp_server:
-    image: sethicis/frp-docker
+    image: ghcr.io/sethicis/frp-docker
     environment:
       - FRP_SERVER_ADDR=${HOST_IP}
       - FRP_PRIVILEGE_TOKEN=${FRP_TOKEN}
@@ -106,7 +106,7 @@ services:
       - "80"
       - "443"
   frp_client:
-    image: sethicis/frp-docker
+    image: ghcr.io/sethicis/frp-docker
     environment:
       - FRP_SERVER_ADDR=${HOST_IP}
       - FRP_PRIVILEGE_TOKEN=${FRP_TOKEN}
