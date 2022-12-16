@@ -40,7 +40,7 @@ jobs:
         push: true
         tags: sethicis/frp-docker:latest,sethicis/frp-docker:${{ needs.check-for-latest.outputs.newVersion }}
     - name: Commit changes
-      if: ${{ $success() }}
+      if: ${{ success() }}
       uses: stefanzweifel/git-auto-commit-action@v4.16.0
       with:
         commit_message: Updated Dockerfile with FRP v${{ needs.check-for-latest.outputs.newVersion }}
